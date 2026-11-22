@@ -1,4 +1,4 @@
-# Python-Run-Command
+# Command Line Tool for Python
 This shell script lets you run a Python script just by typing `run`.
 It remembers which script to run for each working directory.
 
