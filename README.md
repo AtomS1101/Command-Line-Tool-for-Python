@@ -33,10 +33,18 @@ This also activates `.venv` if it exists in your directory.
    run file1 file2
    python3 sample.py file1 file2
    ```
+
 ## Options
-Both options only work with `runfile`.
-- `-h` : print usage
-- `-m` : module file
+
+The following options are available only with `runfile`.
+
+| Option     | Description                                                                 |
+| :--------- | :-------------------------------------------------------------------------- |
+| `-h`       | Display the help message.                                                   |
+| `-m`       | Specify a module file.                                                      |
+| `--remove` | Removes the command link from the current directory.                        |
+| `--clean`  | Removes all command links to files or directories that no longer exist.     |
+
 
 ## Structure
 The recorded commands will be automatically saved to `python_target_file.txt` in the directory containing `run`.
