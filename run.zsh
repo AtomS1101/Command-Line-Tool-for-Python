@@ -9,16 +9,6 @@ setCommand() { # $1:directory, $2:query, $3:option
 	isExists=0
 	file="./main.py" # Default
 	for line in $savedData; do
-		local array=("${(@s/:/)line}")
-		local flag=0
-		if [[ -n "$3" && "$3" == "--clean" ]]; then
-			isExists=1 # To rewrite data
-			if [[ "${array[1]::1}" != "#" && ! -d "$array[1]" ]]; then
-				echo "$array[1]"
-				((removed++))
-				continue
-			fi
-		fi
 		if [[ "${1:A}" == "$array[1]" ]]; then
 			isExists=1
 			file="$array[2]"
@@ -31,6 +21,25 @@ setCommand() { # $1:directory, $2:query, $3:option
 		[[ "$flag" -eq 0 ]] && newData="$newData$line\n"
 	done
 	[[ "$isExists" -eq 1 ]] && echo -en "$newData" > "$savedFile" # Save
+}
+
+clean() {
+	local savedData=("${(@f)$(<"$savedFile")}") # split on newlines
+	newData=""
+	for line in $savedData; do
+		local array=("${(@s/:/)line}")
+		if [[ "${line::1}" == "#" || "${array[2]::3}" == "-m " ]]; then # Skip comment and module
+			newData="$newData$line\n"
+			continue
+		fi
+		if [[ -d "$array[1]" && -f "$array[2]" ]]; then # Exist file and directory
+			newData="$newData$line\n"
+			continue
+		fi
+		echo "$array[1] -> ${array[2]##*/}"
+		((removed++))
+	done
+	echo -en "$newData" > "$savedFile" # Save
 }
 
 save() {
@@ -69,7 +78,7 @@ elif [[ "${0##*/}" == "runfile" ]]; then
 		setCommand "$PWD" "Null" "--remove"
 	elif [[ "$1" == "--clean" ]]; then
 		removed=0
-		setCommand "Null" "Null" "--clean"
+		clean
 		echo "  Removed "$removed" command links."
 	else
 		save "${1:A}"
